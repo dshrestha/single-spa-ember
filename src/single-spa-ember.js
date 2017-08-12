@@ -1,12 +1,10 @@
 const defaultOpts = {
-	// required opts
-	App: null,
-	// Optional opts
-	createOpts: {}, // https://www.emberjs.com/api/ember/2.14.1/classes/Ember.Application
-}
+	applicationInstance: null,
+	appEnvConfig: {}
+};
 
 export default function singleSpaEmber(userOpts) {
-	if (typeof userOpts !== 'object') {
+	if (typeof appEnvConfig !== 'object') {
 		throw new Error(`single-spa-ember requires a configuration object`);
 	}
 
@@ -14,13 +12,9 @@ export default function singleSpaEmber(userOpts) {
 		...defaultOpts,
 		...userOpts,
 	};
-
-	if (!opts.App) {
-		throw new Error(`single-spa-ember must be passed opts.App`);
-	}
-
-	if (opts.createOpts && typeof opts.createOpts !== 'object') {
-		throw new Error(`single-spa-ember: createOpts must be an object to be passed to App.create()`);
+	
+	if (opts.appEnvConfig && typeof opts.appEnvConfig !== 'object') {
+		throw new Error(`single-spa-ember: appEnvConfig must be an object to be passed to App.create()`);
 	}
 
 	return {
@@ -38,8 +32,10 @@ function mount(opts) {
 	return Promise
 		.resolve()
 		.then(() => {
-			opts.applicationInstance = opts.App.create(opts.createOpts);
-		})
+			let appEnvConfig = opts.appEnvConfig
+			let appName = appEnvConfig.modulePrefix;
+			opts.applicationInstance = require(appName+"/app")["default"].create(appEnvConfig.APP);
+		});
 }
 
 function unmount(opts) {

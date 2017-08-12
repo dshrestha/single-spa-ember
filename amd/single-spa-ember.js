@@ -28,25 +28,19 @@ define(['exports'], function (exports) {
 	};
 
 	var defaultOpts = {
-		// required opts
-		App: null,
-		// Optional opts
-		createOpts: {} // https://www.emberjs.com/api/ember/2.14.1/classes/Ember.Application
+		applicationInstance: null,
+		appEnvConfig: {}
 	};
 
 	function singleSpaEmber(userOpts) {
-		if ((typeof userOpts === 'undefined' ? 'undefined' : _typeof(userOpts)) !== 'object') {
+		if ((typeof appEnvConfig === 'undefined' ? 'undefined' : _typeof(appEnvConfig)) !== 'object') {
 			throw new Error('single-spa-ember requires a configuration object');
 		}
 
 		var opts = _extends({}, defaultOpts, userOpts);
 
-		if (!opts.App) {
-			throw new Error('single-spa-ember must be passed opts.App');
-		}
-
-		if (opts.createOpts && _typeof(opts.createOpts) !== 'object') {
-			throw new Error('single-spa-ember: createOpts must be an object to be passed to App.create()');
+		if (opts.appEnvConfig && _typeof(opts.appEnvConfig) !== 'object') {
+			throw new Error('single-spa-ember: appEnvConfig must be an object to be passed to App.create()');
 		}
 
 		return {
@@ -62,7 +56,9 @@ define(['exports'], function (exports) {
 
 	function mount(opts) {
 		return Promise.resolve().then(function () {
-			opts.applicationInstance = opts.App.create(opts.createOpts);
+			var appEnvConfig = opts.appEnvConfig;
+			var appName = appEnvConfig.modulePrefix;
+			opts.applicationInstance = require(appName + "/app")["default"].create(appEnvConfig.APP);
 		});
 	}
 
