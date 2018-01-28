@@ -121,8 +121,21 @@ function mount(opts) {
 
 function unmount(opts) {
   return Promise.resolve().then(function () {
+    opts.applicationInstance.reset();
     opts.applicationInstance.destroy();
     opts.applicationInstance = null;
+
+    var appEnvConfig = opts.appEnvConfig;
+    var appName = appEnvConfig.modulePrefix;
+    var scriptsToRemove = ['/build/' + appName + '/assets/vendor.js', '/build/' + appName + '/assets/ember-app.js'];
+    var head = document.getElementsByTagName('head')[0];
+    var scripts = head.getElementsByTagName('script');
+
+    scripts.forEach(function (script) {
+      if (scriptsToRemove.indexOf(script.getAttribute("src")) !== -1) {
+        head.removeChild(script);
+      }
+    });
   });
 }
 
