@@ -121,7 +121,7 @@ function mount(opts) {
 
 function unmount(opts) {
   return Promise.resolve().then(function () {
-    //opts.applicationInstance.reset();
+    opts.applicationInstance.reset();
     opts.applicationInstance.destroy();
     opts.applicationInstance = null;
 
