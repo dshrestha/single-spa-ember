@@ -49,18 +49,6 @@ function unmount(opts) {
       opts.applicationInstance.reset();
       opts.applicationInstance.destroy();
       opts.applicationInstance = null;
-
-      let appEnvConfig = opts.appEnvConfig;
-      let appName = appEnvConfig.modulePrefix;
-      let scriptsToRemove = ['/build/' + appName + '/assets/vendor.js', '/build/' + appName + '/assets/ember-app.js'];
-      let head = document.getElementsByTagName('head')[0];
-      let scripts = head.getElementsByTagName('script');
-
-      scripts.forEach(function (script) {
-        if (scriptsToRemove.indexOf(script.getAttribute("src")) !== -1) {
-          head.removeChild(script);
-        }
-      });
     });
 }
 
